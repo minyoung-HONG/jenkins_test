@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        TF_WORKSPACE = 'vpc-test'
+        TF_WORKSPACE = 'jenkins-test'
     }
 
     stages {
