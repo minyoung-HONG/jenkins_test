@@ -20,7 +20,7 @@ terraform {
     organization = "inside-myhong"
     hostname = "app.terraform.io"
     workspaces {
-      name = "vpc"
+      name = "vpc-test"
     }
   }
 }
