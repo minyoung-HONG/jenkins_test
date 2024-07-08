@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    environment {
+        TF_WORKSPACE = 'vpc'
+    }
+
+    stages {
+        stage('Checkout Terraform') {
+            steps {
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/main']], 
+                          userRemoteConfigs: [[credentialsId: 'git', 
+                                               url: 'https://github.com/minyoung-HONG/0708.git']]])
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                withCredentials([string(credentialsId: 'TF_TOKEN', variable: 'TF_TOKEN')]) {
+                    withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}", "TF_WORKSPACE=${TF_WORKSPACE}"]) {
+                        sh 'terraform init -input=false'
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                withCredentials([string(credentialsId: 'TF_TOKEN', variable: 'TF_TOKEN')]) {
+                    withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}", "TF_WORKSPACE=${TF_WORKSPACE}"]) {
+                        sh 'terraform plan'
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                withCredentials([string(credentialsId: 'TF_TOKEN', variable: 'TF_TOKEN')]) {
+                    withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}", "TF_WORKSPACE=${TF_WORKSPACE}"]) {
+                        sh 'terraform apply'
+                    }
+                }
+         
